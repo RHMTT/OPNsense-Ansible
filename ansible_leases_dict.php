@@ -7,7 +7,7 @@
 //  /usr/local/www/
 //
 //  and hit it by visiting
-//  http://$OPNSENSE/ansible_leases_dict.php
+//  http://$OPNSENSE/ansible_leases_json.php
 
 
 
@@ -303,6 +303,8 @@ foreach ($leases as $data) {
 	print "    ip: " . $data['ip'] . "\n";
 	print "    leasetype: " . $data['act'] . "\n";
 	print "    hostname: " . $data['hostname'] . "\n";
+	print "    description: " . $data['descr'] . "\n";
+	print "    online: " . $data['online'] . "\n";
 
 }
 print "</pre>\n";
