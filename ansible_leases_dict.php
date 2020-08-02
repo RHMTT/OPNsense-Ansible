@@ -7,7 +7,7 @@
 //  /usr/local/www/
 //
 //  and hit it by visiting
-//  http://$OPNSENSE/ansible_leases_json.php
+//  http://$OPNSENSE/ansible_leases_dict.php
 
 
 
