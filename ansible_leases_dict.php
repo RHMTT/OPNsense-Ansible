@@ -293,21 +293,24 @@ include("head.inc");
 $leases_count = 0;
 
 print "<pre>\n";
-print "my_leases:\n";
+print "opnsense_leases:\n";
 
-//$key => $value
 foreach ($leases as $data) {
-//	print_r($data);
+	$macsplode = explode(":",$data['mac']);
+	$search_mac = strtoupper($macsplode[0] . ":" . $macsplode[1] . ":" . $macsplode[2]);
+	$vendor_reply = exec ( "egrep \"^$search_mac\" mac_map.txt | head -n 1" );
+	$vreply = explode("\t",$vendor_reply);
+	$vendor = (isset($vreply[2]) ? $vreply[2] : $vreply[1]);
 
 	print "  - mac: " . preg_replace("/:/","-",$data['mac']) . "\n";
+	print "    vendor: " . $vendor . "\n";
 	print "    ip: " . $data['ip'] . "\n";
 	print "    leasetype: " . $data['act'] . "\n";
 	print "    hostname: " . $data['hostname'] . "\n";
 	print "    description: " . $data['descr'] . "\n";
 	print "    online: " . $data['online'] . "\n";
 
+
 }
 print "</pre>\n";
 
-
-//include("foot.inc");
