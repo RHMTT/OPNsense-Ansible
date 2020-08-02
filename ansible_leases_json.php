@@ -235,6 +235,15 @@ $leasesfile = dhcpd_dhcpv4_leasesfile();
                 $slease['ip'] = $static['ipaddr'];
                 $slease['type'] = "static";
                 $slease['mac'] = $static['mac'];
+
+					$macsplode = explode(":",$static['mac']);
+					$search_mac = strtoupper($macsplode[0] . ":" . $macsplode[1] . ":" . $macsplode[2]);
+					$vendor_reply = exec ( "egrep \"^$search_mac\" mac_map.txt | head -n 1" );
+					$vreply = explode("\t",$vendor_reply);
+					$vendor = (isset($vreply[2]) ? $vreply[2] : $vreply[1]);
+
+
+                $slease['vendor'] = $vendor;
                 $slease['start'] = '';
                 $slease['end'] = '';
                 $slease['hostname'] = $static['hostname'];
