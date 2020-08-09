@@ -1,7 +1,5 @@
 <?php
 
-// This doesn't yet work in OPNsense.  In testing, this ttakes the array from a static file (identical to the one in OPNsense
-
 $json = file_get_contents('./array_short.json', true);
 $dhcp = json_decode($json, true);
 
@@ -9,8 +7,8 @@ $filters = json_decode($_GET['filter'], true);
 
 /*
 http://10.200.8.117/?filter=[
-{"field":"ip","match":"^10.20.5","group":"GROUP2"},
-{"field":"ip","match":"^10.20.7","group":"KEV"},
+{"field":"ip","match":"^10.200.5","group":"CAM"},
+{"field":"ip","match":"^10.200.7","group":"KEV"},
 
 {"field":"hostname","match":"echo","group":"IOT"},
 {"field":"vendor","match":"belkin","group":"IOT"},
@@ -20,9 +18,10 @@ http://10.200.8.117/?filter=[
 {"field":"vendor","match":"synology","group":"KEV"},
 {"field":"DEFAULT","match":"DEFAULT","group":"DELETE"}
 
-,{"default":"DEFAULT"}
+,{"default":"DEFAULTGROUP"}
 ]
 
+// When no groups are matched, the (optional) default group is associated.
 */
 
 $newarray = array();
@@ -48,31 +47,33 @@ foreach( $newarray as $id => $values){
 	$groupct = 0;
         foreach( $values as $var => $val){
 		foreach($filters as $filter){
-			$field = $filter['field'];
-			$match = $filter['match'];
-			$group = $filter['group'];
+			if ( isset($filter['default']) and ! isset($default_group)){
+				$default_group = $filter['default'];
+			}else{
+				$field = $filter['field'];
+				$match = $filter['match'];
+				$group = $filter['group'];
 
-			if (preg_match("/$field/",$var)){
-				if (preg_match("/$match/i",$val)){
-					$groupct = ($groupct + 1);
-					$newarray[$id]['groups'][] = $group ;
+				if (preg_match("/$field/",$var)){
+					if (preg_match("/$match/i",$val)){
+						if ($group){
+							$groupct = ($groupct + 1);
+							$newarray[$id]['groups'][] = $group ;
+						}
+					}
 				}
 			}
 		}
-		$newarray[$id]['groupcount'] = $groupct;
+	}
+	$newarray[$id]['groupcount'] = $groupct;
+	if ($groupct == 0) $newarray[$id]['groups'][] = $default_group ;
 }
 
-//$newarray = array_map("unserialize", array_unique(array_map("serialize", $newarray)));
 
 print "<pre>\n";
-print "\n\n\nNEW ARRAY:\n";
 print_r($newarray);
-print "\n\n\nOLD ARRAY:\n";
-print_r($dhcp);
 print "</pre>\n";
 
 
-
 ?>
-
 
