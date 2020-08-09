@@ -1,6 +1,6 @@
 <?php
 
-// This doesn't yet work in OPNsense.  In testing, this ttakes the array from a static file (identtical to the one in OPNsense
+// This doesn't yet work in OPNsense.  In testing, this ttakes the array from a static file (identical to the one in OPNsense
 
 $json = file_get_contents('./array_short.json', true);
 $dhcp = json_decode($json, true);
